@@ -1,0 +1,20 @@
+﻿@inject IConfiguration configuration
+@inject IImageManager imageManager
+@page "/"
+@using PluginFramework.Core.Images
+@using PluginFramework.UI.Constants
+
+<PageTitle>Home</PageTitle>
+
+<h1>Hello, world!</h1>
+
+@foreach (var plugin in imageManager.GetAvailablePlugins(configuration.GetSection(ConfigurationLiterals.PluginsSection).Get<List<string>>()))
+{
+    <h1>@plugin.PluginName</h1>
+    @foreach (var effect in plugin.ProvidedEffects)
+    {
+        <p>@effect</p>
+    }
+}
+
+Welcome to your new app.
