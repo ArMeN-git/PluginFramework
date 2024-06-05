@@ -43,17 +43,29 @@ internal class ImageManager : IImageManager
         return result;
     }
 
-    public List<string> ApplyEffectsToImages(List<ApplyEffectsDto> imagesWithEffects)
+    public Task<string[]> ApplyEffectsToImages(List<ApplyEffectsDto> imagesWithEffects)
     {
         var implementingTypes = LoadImplementingTypes(typeof(IImageManipulator),
                             Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "..", "Plugins")));
 
+        var tasks = new List<Task<string>>();
         var pluginNames = implementingTypes.Keys.Select(v => v.Split('.')[0]).ToList();
 
+        foreach (var imageModel in imagesWithEffects)
+        {
+            var imagebase64 = imageModel.ImageBase64;
+            foreach (var plugin in imageModel.ChoosenEffects)
+            {
+                var effects = plugin.Value;
+                // get plugin from types
+                // call Apply method by reflection, by passing imageBase64 and effects parameters
+                // add task to tasks List
+            }
+        }
         // lookup for selected plugin types, call methods by reflection
         // by passing effects as parameters
 
-        return [];
+        return Task.WhenAll(tasks);
     }
 
     private static Dictionary<string, Type> LoadImplementingTypes(Type interfaceType, string path)
